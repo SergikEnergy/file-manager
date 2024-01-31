@@ -1,0 +1,30 @@
+{
+  "name": "nodejs-cli-rile-manager",
+  "version": "1.0.0",
+  "description": "This repo is a base nodejs cli file manager without using any external libraries",
+  "main": "index.js",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "type": "module",
+  "scripts": {
+    "start": "node index.js --username='Default User'",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SergikEnergy/file-manager.git"
+  },
+  "keywords": [
+    "node",
+    "modules",
+    "fs",
+    "os"
+  ],
+  "author": "Sergej",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SergikEnergy/file-manager/issues"
+  },
+  "homepage": "https://github.com/SergikEnergy/file-manager#readme"
+}
