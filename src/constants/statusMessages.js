@@ -1,4 +1,4 @@
 export const consoleMessages = {
-  WRONG: 'Invalid input',
+  WRONG_INPUT: 'Invalid input',
   ERROR: 'Operation failed',
 };

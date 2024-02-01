@@ -1,25 +1,74 @@
 import * as readline from 'node:readline/promises';
+import { parseData } from './utils/parseData.js';
 import { colorizedLog as log } from './utils/colorizedLog.js';
+import { consoleMessages } from './constants/statusMessages.js';
 
 class App {
   constructor(homeDir) {
     this._homeDir = homeDir;
   }
 
+  _isValid = async (command, args) => {
+    switch (command.toLowerCase()) {
+      // operation without args
+      case 'up':
+      case 'ls':
+      case '.exit':
+        if (args.length > 0) {
+          return false;
+        } else {
+          return true;
+        }
+      // operation with single arg
+
+      case 'cd':
+      case 'cat':
+      case 'add':
+      case 'rm':
+      case 'os':
+      case 'hash':
+        if (args.length === 1 && args[0]) {
+          return true;
+        } else {
+          return false;
+        }
+
+      // operation with double args
+      case 'rn':
+      case 'cp':
+      case 'mv':
+      case 'compress':
+      case 'decompress':
+        if (args.length === 2 && args[0] && args[1]) {
+          return true;
+        } else {
+          return false;
+        }
+
+      default:
+        return false;
+    }
+  };
+
   run() {
     const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
 
     rl.on('line', async (data) => {
-      try {
-        log(typeof data);
+      if (data.includes('.exit')) {
+        rl.close();
+      }
 
-        if (data.includes('.exit')) {
-          rl.close();
+      const [command, ...restParams] = parseData(data.trim().toString());
+      if (await this._isValid(command, restParams)) {
+        try {
+          //tbd
+        } catch {
+          log(consoleMessages.ERROR, 'red');
         }
-      } catch {}
+      } else {
+        log(consoleMessages.WRONG_INPUT, 'cyan');
+      }
     });
-
-    log("I'm running", 'green');
 
     rl.on('close', () => {
       process.exit(0);
