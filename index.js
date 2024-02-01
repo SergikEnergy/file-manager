@@ -3,10 +3,9 @@ import { sayHelloOrGoodBye } from './src/userMessages/greetOrBye.js';
 import { logSuccess } from './src/utils/logSuccessMessage.js';
 import App from './src/app.js';
 
-const pathToHomeDir = homedir();
-
 sayHelloOrGoodBye();
 
+const pathToHomeDir = homedir();
 logSuccess(pathToHomeDir);
 
 const app = new App(pathToHomeDir);
@@ -18,4 +17,8 @@ process.on('exit', (code) => {
   } else {
     console.log('error');
   }
+});
+
+process.on('SIGINT', () => {
+  sayHelloOrGoodBye('bye');
 });

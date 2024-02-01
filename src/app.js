@@ -1,11 +1,14 @@
 import * as readline from 'node:readline/promises';
 import { parseData } from './utils/parseData.js';
+import * as osInfo from './commands/currentOsInfo.js';
+
 import { colorizedLog as log } from './utils/colorizedLog.js';
+import { logSuccess } from './utils/logSuccessMessage.js';
 import { consoleMessages } from './constants/statusMessages.js';
 
 class App {
   constructor(homeDir) {
-    this._homeDir = homeDir;
+    this._currentPath = homeDir;
   }
 
   _isValid = async (command, args) => {
@@ -50,6 +53,34 @@ class App {
     }
   };
 
+  _logsProcessInfo = async ([flag]) => {
+    switch (flag.toLowerCase()) {
+      case '--eol':
+        await osInfo.getEOLInfo();
+        break;
+
+      case '--cpus':
+        await osInfo.getCPUInfo();
+        break;
+
+      case '--homedir':
+        await osInfo.getHomeDir();
+        break;
+
+      case '--username':
+        await osInfo.getUserName();
+        break;
+
+      case '--architecture':
+        await osInfo.getArchitecture();
+        break;
+
+      default:
+        log(consoleMessages.WRONG_INPUT, 'cyan');
+        break;
+    }
+  };
+
   run() {
     const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
 
@@ -62,6 +93,9 @@ class App {
       if (await this._isValid(command, restParams)) {
         try {
           //tbd
+
+          //end in case success log
+          logSuccess(this._currentPath);
         } catch {
           log(consoleMessages.ERROR, 'red');
         }
