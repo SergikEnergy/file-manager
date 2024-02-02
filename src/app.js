@@ -1,6 +1,8 @@
 import * as readline from 'node:readline/promises';
 import { parseData } from './utils/parseData.js';
 import * as osInfo from './commands/currentOsInfo.js';
+import { moveUpLevel, changeCurrentDirectory } from './commands/navigation.js';
+import { printFileStructure } from './commands/fileSystem.js';
 
 import { colorizedLog as log } from './utils/colorizedLog.js';
 import { logSuccess } from './utils/logSuccessMessage.js';
@@ -81,6 +83,28 @@ class App {
     }
   };
 
+  _commands = async (operation, args) => {
+    const [arg1, arg2, ...restFlags] = args;
+
+    switch (operation.toLowerCase()) {
+      case 'up':
+        this._currentPath = await moveUpLevel(this._currentPath);
+        break;
+
+      case 'ls':
+        await printFileStructure(this._currentPath);
+        break;
+
+      case 'os':
+        await this._logsProcessInfo(args);
+        break;
+
+      default:
+        log(consoleMessages.WRONG_INPUT, 'cyan');
+        break;
+    }
+  };
+
   run() {
     const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
 
@@ -92,7 +116,7 @@ class App {
       const [command, ...restParams] = parseData(data.trim().toString());
       if (await this._isValid(command, restParams)) {
         try {
-          //tbd
+          await this._commands(command, restParams);
 
           //end in case success log
           logSuccess(this._currentPath);

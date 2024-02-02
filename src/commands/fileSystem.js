@@ -11,11 +11,11 @@ export const printFileStructure = async (path) => {
     .sort(sortByNameProp)
     .sort((a, b) => b.Type.length - a.Type.length);
 
-  function sortByNameProp(prop1, prop2) {
-    if (prop1.Name > prop2.Name) {
+  function sortByNameProp(obj1, obj2) {
+    if (obj1.Name > obj2.Name) {
       return 1;
     }
-    if (prop1.Name < prop2.Name) {
+    if (obj1.Name < obj2.Name) {
       return -1;
     }
     return 0;
