@@ -6,7 +6,7 @@ export const moveUpLevel = async (path) => {
 };
 
 export const changeCurrentDirectory = async (pathFrom, pathTo) => {
-  const path = resolve(pathFrom, pathTo);
+  const path = resolve(pathFrom, ...pathTo);
   await isDirExist(path);
   return path;
 };

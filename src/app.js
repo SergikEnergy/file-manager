@@ -14,79 +14,83 @@ class App {
   }
 
   _isValid = async (command, args) => {
-    switch (command.toLowerCase()) {
-      // operation without args
-      case 'up':
-      case 'ls':
-      case '.exit':
-        if (args.length > 0) {
-          return false;
-        } else {
-          return true;
-        }
-      // operation with single arg
+    try {
+      switch (command.toLowerCase()) {
+        // operation without args
+        case 'up':
+        case 'ls':
+        case '.exit':
+          if (args.length > 0) {
+            return false;
+          } else {
+            return true;
+          }
+        // operation with single arg
 
-      case 'cd':
-      case 'cat':
-      case 'add':
-      case 'rm':
-      case 'os':
-      case 'hash':
-        if (args.length === 1 && args[0]) {
-          return true;
-        } else {
-          return false;
-        }
+        case 'cd':
+        case 'cat':
+        case 'add':
+        case 'rm':
+        case 'os':
+        case 'hash':
+          if (args.length >= 1 && args[0]) {
+            return true;
+          } else {
+            return false;
+          }
 
-      // operation with double args
-      case 'rn':
-      case 'cp':
-      case 'mv':
-      case 'compress':
-      case 'decompress':
-        if (args.length === 2 && args[0] && args[1]) {
-          return true;
-        } else {
-          return false;
-        }
+        // operation with double args
+        case 'rn':
+        case 'cp':
+        case 'mv':
+        case 'compress':
+        case 'decompress':
+          if (args.length >= 2 && args[0] && args[1]) {
+            return true;
+          } else {
+            return false;
+          }
 
-      default:
-        return false;
+        default:
+          return false;
+      }
+    } catch {
+      return false;
     }
   };
 
   _logsProcessInfo = async ([flag]) => {
-    switch (flag.toLowerCase()) {
-      case '--eol':
-        await osInfo.getEOLInfo();
-        break;
+    try {
+      switch (flag.toLowerCase()) {
+        case '--eol':
+          await osInfo.getEOLInfo();
+          break;
 
-      case '--cpus':
-        await osInfo.getCPUInfo();
-        break;
+        case '--cpus':
+          await osInfo.getCPUInfo();
+          break;
 
-      case '--homedir':
-        await osInfo.getHomeDir();
-        break;
+        case '--homedir':
+          await osInfo.getHomeDir();
+          break;
 
-      case '--username':
-        await osInfo.getUserName();
-        break;
+        case '--username':
+          await osInfo.getUserName();
+          break;
 
-      case '--architecture':
-        await osInfo.getArchitecture();
-        break;
+        case '--architecture':
+          await osInfo.getArchitecture();
+          break;
 
-      default:
-        log(consoleMessages.WRONG_INPUT, 'cyan');
-        break;
-    }
+        default:
+          log(consoleMessages.WRONG_INPUT, 'cyan');
+          break;
+      }
+    } catch {}
   };
 
-  _commands = async (operation, args) => {
-    const [arg1, arg2, ...restFlags] = args;
-
-    switch (operation.toLowerCase()) {
+  _commands = async (command, args) => {
+    switch (command.toLowerCase()) {
       case 'up':
         this._currentPath = await moveUpLevel(this._currentPath);
         break;
@@ -94,6 +98,14 @@ class App {
       case 'ls':
         await printFileStructure(this._currentPath);
         break;
+
+      case 'cd':
+        this._currentPath = await changeCurrentDirectory(this._currentPath, args);
+
+        //wrong parse if ./"folder space"
+
+        break;
+      //
 
       case 'os':
         await this._logsProcessInfo(args);
@@ -105,26 +117,25 @@ class App {
     }
   };
 
-  run() {
+  async run() {
     const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
 
     rl.on('line', async (data) => {
       if (data.includes('.exit')) {
         rl.close();
       }
-
-      const [command, ...restParams] = parseData(data.trim().toString());
-      if (await this._isValid(command, restParams)) {
-        try {
+      const dataForChecking = data.trim();
+      try {
+        const [command, ...restParams] = parseData(dataForChecking);
+        if (await this._isValid(command, restParams)) {
           await this._commands(command, restParams);
-
           //end in case success log
           logSuccess(this._currentPath);
-        } catch {
-          log(consoleMessages.ERROR, 'red');
+        } else {
+          log(consoleMessages.WRONG_INPUT, 'cyan');
         }
-      } else {
-        log(consoleMessages.WRONG_INPUT, 'cyan');
+      } catch {
+        log(consoleMessages.ERROR, 'red');
       }
     });
 

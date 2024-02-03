@@ -1,7 +1,36 @@
 export function parseData(data) {
-  const regex = /[^\s"']+|"([^"]*)"|'([^']*)'/g;
-  const cliData = data.match(regex) || [];
-  return cliData.map((item) => item.replace(/(^['"]|['"]$)/g, ''));
+  // change spaces inside '  '  or "   " on separator sign
+  const separator = '_sep_';
+  const dataWithoutSpacesInside = data.replace(/(['"])(.*?)\1/g, (_, quote, content) => {
+    return quote + content.replace(' ', separator) + quote;
+  });
+  const [command, arg1, arg2] = dataWithoutSpacesInside.split(' ');
+  if (!arg1) {
+    return [command];
+  }
+  if (!arg2 && arg1) {
+    return [command, prepareArgs(arg1, separator)];
+  }
+  return [command, prepareArgs(arg1, separator), prepareArgs(arg2, separator)];
+}
+
+function prepareArgs(arg, sep) {
+  const regExp = /[^\s"']+|"([^"]*)"|'([^']*)'/g;
+  const params = arg.match(regExp) || [];
+  const sepRegExp = new RegExp(sep, 'g');
+  return params
+    .map((arg) => {
+      arg
+        .replace(/(^['"]|['"]$)/g, '')
+        .trim()
+        .replace(/,/g, '');
+      if (arg.includes(sep)) {
+        arg = arg.replace(sepRegExp, ' ');
+      }
+      return arg;
+    })
+    .join('')
+    .replace(/['"]/g, '');
 }
 
 /* some regExp for checking correct command
