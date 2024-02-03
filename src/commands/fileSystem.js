@@ -1,9 +1,9 @@
-import { readdir, writeFile, rename } from 'node:fs/promises';
-import { createReadStream } from 'node:fs';
-import { resolve } from 'node:path';
-// import { pipeline } from 'node:stream/promises';
+import { readdir, writeFile, rename, mkdir } from 'node:fs/promises';
+import { createReadStream, createWriteStream } from 'node:fs';
+import { resolve, parse } from 'node:path';
+import { pipeline } from 'node:stream/promises';
 
-import { pathResolver, isFileExist } from '../utils/helpers.js';
+import { pathResolver, isFileExist, isDirExist } from '../utils/helpers.js';
 
 export const printFolderStructure = async (path) => {
   const filesList = await readdir(path, { withFileTypes: true });
@@ -60,6 +60,25 @@ export const renameFile = async (currentPath, [pathToFile, name]) => {
   const pathToRead = pathResolver(currentPath, [pathToFile]);
   const newPath = resolve(currentPath, name);
   await rename(pathToRead, newPath);
+};
+
+export const copyFile = async (currentPath, [pathToFile, pathWhere]) => {
+  const pathFrom = pathResolver(currentPath, [pathToFile]);
+  const pathDestinationDir = pathResolver(currentPath, [pathWhere]);
+  const fileName = parse(pathFrom).base;
+  const pathFileDestination = resolve(pathDestinationDir, fileName);
+
+  const rs = createReadStream(pathFrom, 'utf-8');
+
+  try {
+    const dirExist = await isDirExist(pathDestinationDir);
+  } catch {
+    await mkdir(pathDestinationDir);
+  }
+
+  const ws = createWriteStream(pathFileDestination);
+
+  await pipeline(rs, ws);
 };
 
 // cd 'H:\"IT - старт и вперед"\RSschool\"NODEJS Course"\2-file-manager\file-manager'
