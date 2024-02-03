@@ -1,8 +1,9 @@
-import { readdir } from 'node:fs/promises';
+import { readdir, writeFile } from 'node:fs/promises';
 import { createReadStream } from 'node:fs';
 // import { pipeline } from 'node:stream/promises';
 
 import { pathResolver } from '../utils/helpers.js';
+import { resolve } from 'node:path';
 
 export const printFolderStructure = async (path) => {
   const filesList = await readdir(path, { withFileTypes: true });
@@ -48,4 +49,9 @@ export const printFileToConsole = async (currentPath, pathToFile) => {
   } catch {
     throw new Error('Failed Read');
   }
+};
+
+export const createEmptyFile = async (currentPath, [fileName]) => {
+  const pathToNewFile = resolve(currentPath, fileName);
+  await writeFile(pathToNewFile, '', { encoding: 'utf-8' });
 };
