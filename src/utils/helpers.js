@@ -1,4 +1,5 @@
 import { stat } from 'node:fs/promises';
+import { normalize, resolve, isAbsolute } from 'node:path';
 
 export const isDirExist = async (pathToDir) => {
   try {
@@ -7,4 +8,12 @@ export const isDirExist = async (pathToDir) => {
   } catch {
     throw new Error('Error with reading directory');
   }
+};
+
+export const pathResolver = (currentPath, pathTo) => {
+  const absolute = isAbsolute(...pathTo);
+  if (absolute) {
+    return normalize(...pathTo);
+  }
+  return resolve(currentPath, ...pathTo);
 };

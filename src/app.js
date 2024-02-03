@@ -2,7 +2,7 @@ import * as readline from 'node:readline/promises';
 import { parseData } from './utils/parseData.js';
 import * as osInfo from './commands/currentOsInfo.js';
 import { moveUpLevel, changeCurrentDirectory } from './commands/navigation.js';
-import { printFileStructure } from './commands/fileSystem.js';
+import { printFolderStructure, printFileToConsole } from './commands/fileSystem.js';
 
 import { colorizedLog as log } from './utils/colorizedLog.js';
 import { logSuccess } from './utils/logSuccessMessage.js';
@@ -96,14 +96,15 @@ class App {
         break;
 
       case 'ls':
-        await printFileStructure(this._currentPath);
+        await printFolderStructure(this._currentPath);
         break;
 
       case 'cd':
         this._currentPath = await changeCurrentDirectory(this._currentPath, args);
+        break;
 
-        //wrong parse if ./"folder space"
-
+      case 'cat':
+        await printFileToConsole(this._currentPath, args);
         break;
       //
 
@@ -133,9 +134,11 @@ class App {
           logSuccess(this._currentPath);
         } else {
           log(consoleMessages.WRONG_INPUT, 'cyan');
+          logSuccess(this._currentPath);
         }
       } catch {
         log(consoleMessages.ERROR, 'red');
+        logSuccess(this._currentPath);
       }
     });
 

@@ -1,6 +1,10 @@
 import { readdir } from 'node:fs/promises';
+import { createReadStream } from 'node:fs';
+// import { pipeline } from 'node:stream/promises';
 
-export const printFileStructure = async (path) => {
+import { pathResolver } from '../utils/helpers.js';
+
+export const printFolderStructure = async (path) => {
   const filesList = await readdir(path, { withFileTypes: true });
 
   const sortedList = filesList
@@ -22,4 +26,26 @@ export const printFileStructure = async (path) => {
   }
 
   console.table(sortedList);
+};
+
+export const printFileToConsole = async (currentPath, pathToFile) => {
+  try {
+    const pathToRead = pathResolver(currentPath, pathToFile);
+    const rs = createReadStream(pathToRead, 'utf-8');
+    const waitEnd = new Promise((res) => {
+      rs.on('end', () => {
+        res();
+      });
+    });
+    rs.on('data', (chunk) => {
+      console.log(chunk.toString());
+    });
+    rs.on('error', (err) => {
+      throw new Error(err.message);
+    });
+
+    await waitEnd;
+  } catch {
+    throw new Error('Failed Read');
+  }
 };

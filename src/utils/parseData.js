@@ -2,8 +2,9 @@ export function parseData(data) {
   // change spaces inside '  '  or "   " on separator sign
   const separator = '_sep_';
   const dataWithoutSpacesInside = data.replace(/(['"])(.*?)\1/g, (_, quote, content) => {
-    return quote + content.replace(' ', separator) + quote;
+    return quote + content.replace(/ /g, separator) + quote;
   });
+
   const [command, arg1, arg2] = dataWithoutSpacesInside.split(' ');
   if (!arg1) {
     return [command];
