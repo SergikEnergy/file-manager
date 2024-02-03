@@ -17,3 +17,12 @@ export const pathResolver = (currentPath, pathTo) => {
   }
   return resolve(currentPath, ...pathTo);
 };
+
+export const isFileExist = async (pathToFile) => {
+  try {
+    const isFile = (await stat(pathToFile)).isFile();
+    return isFile;
+  } catch {
+    throw new Error('Failed read file');
+  }
+};

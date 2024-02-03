@@ -2,7 +2,7 @@ import * as readline from 'node:readline/promises';
 import { parseData } from './utils/parseData.js';
 import * as osInfo from './commands/currentOsInfo.js';
 import { moveUpLevel, changeCurrentDirectory } from './commands/navigation.js';
-import { printFolderStructure, printFileToConsole, createEmptyFile } from './commands/fileSystem.js';
+import { printFolderStructure, printFileToConsole, createEmptyFile, renameFile } from './commands/fileSystem.js';
 
 import { colorizedLog as log } from './utils/colorizedLog.js';
 import { logSuccess } from './utils/logSuccessMessage.js';
@@ -109,6 +109,10 @@ class App {
 
       case 'add':
         await createEmptyFile(this._currentPath, args);
+        break;
+
+      case 'rn':
+        await renameFile(this._currentPath, args);
         break;
       //
 

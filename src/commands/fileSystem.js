@@ -1,9 +1,9 @@
-import { readdir, writeFile } from 'node:fs/promises';
+import { readdir, writeFile, rename } from 'node:fs/promises';
 import { createReadStream } from 'node:fs';
+import { resolve } from 'node:path';
 // import { pipeline } from 'node:stream/promises';
 
-import { pathResolver } from '../utils/helpers.js';
-import { resolve } from 'node:path';
+import { pathResolver, isFileExist } from '../utils/helpers.js';
 
 export const printFolderStructure = async (path) => {
   const filesList = await readdir(path, { withFileTypes: true });
@@ -55,3 +55,11 @@ export const createEmptyFile = async (currentPath, [fileName]) => {
   const pathToNewFile = resolve(currentPath, fileName);
   await writeFile(pathToNewFile, '', { encoding: 'utf-8' });
 };
+
+export const renameFile = async (currentPath, [pathToFile, name]) => {
+  const pathToRead = pathResolver(currentPath, [pathToFile]);
+  const newPath = resolve(currentPath, name);
+  await rename(pathToRead, newPath);
+};
+
+// cd 'H:\"IT - старт и вперед"\RSschool\"NODEJS Course"\2-file-manager\file-manager'
