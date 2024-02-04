@@ -11,6 +11,7 @@ import {
   deleteFile,
   moveFile,
 } from './commands/fileSystem.js';
+import { printHashToConsole } from './commands/crypto.js';
 
 import { colorizedLog as log } from './utils/colorizedLog.js';
 import { logSuccess } from './utils/logSuccessMessage.js';
@@ -134,10 +135,13 @@ class App {
       case 'mv':
         await moveFile(this._currentPath, args);
         break;
-      //
 
       case 'os':
         await this._logsProcessInfo(args);
+        break;
+
+      case 'hash':
+        await printHashToConsole(this._currentPath, args);
         break;
 
       default:
