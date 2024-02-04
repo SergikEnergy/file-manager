@@ -8,6 +8,8 @@ import {
   createEmptyFile,
   renameFile,
   copyFile,
+  deleteFile,
+  moveFile,
 } from './commands/fileSystem.js';
 
 import { colorizedLog as log } from './utils/colorizedLog.js';
@@ -123,6 +125,14 @@ class App {
 
       case 'cp':
         await copyFile(this._currentPath, args);
+        break;
+
+      case 'rm':
+        await deleteFile(this._currentPath, args);
+        break;
+
+      case 'mv':
+        await moveFile(this._currentPath, args);
         break;
       //
 

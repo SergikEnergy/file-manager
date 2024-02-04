@@ -1,4 +1,4 @@
-import { readdir, writeFile, rename, mkdir } from 'node:fs/promises';
+import { readdir, writeFile, rename, mkdir, unlink } from 'node:fs/promises';
 import { createReadStream, createWriteStream } from 'node:fs';
 import { resolve, parse } from 'node:path';
 import { pipeline } from 'node:stream/promises';
@@ -79,6 +79,16 @@ export const copyFile = async (currentPath, [pathToFile, pathWhere]) => {
   const ws = createWriteStream(pathFileDestination);
 
   await pipeline(rs, ws);
+};
+
+export const deleteFile = async (currentPath, pathToFile) => {
+  const pathForDelete = pathResolver(currentPath, pathToFile);
+  await unlink(pathForDelete);
+};
+
+export const moveFile = async (currentPath, [pathFrom, pathWhere]) => {
+  await copyFile(currentPath, [pathFrom, pathWhere]);
+  await deleteFile(currentPath, [pathFrom]);
 };
 
 // cd 'H:\"IT - старт и вперед"\RSschool\"NODEJS Course"\2-file-manager\file-manager'
