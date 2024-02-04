@@ -3,7 +3,7 @@ import { createReadStream, createWriteStream } from 'node:fs';
 import { resolve, parse } from 'node:path';
 import { pipeline } from 'node:stream/promises';
 
-import { pathResolver, isFileExist, isDirExist } from '../utils/helpers.js';
+import { pathResolver, isDirExist } from '../utils/helpers.js';
 
 export const printFolderStructure = async (path) => {
   const filesList = await readdir(path, { withFileTypes: true });
@@ -71,7 +71,7 @@ export const copyFile = async (currentPath, [pathToFile, pathWhere]) => {
   const rs = createReadStream(pathFrom, 'utf-8');
 
   try {
-    const dirExist = await isDirExist(pathDestinationDir);
+    await isDirExist(pathDestinationDir);
   } catch {
     await mkdir(pathDestinationDir);
   }

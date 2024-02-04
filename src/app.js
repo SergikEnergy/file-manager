@@ -12,6 +12,7 @@ import {
   moveFile,
 } from './commands/fileSystem.js';
 import { printHashToConsole } from './commands/crypto.js';
+import { compressFile, decompressFile } from './commands/brothli.js';
 
 import { colorizedLog as log } from './utils/colorizedLog.js';
 import { logSuccess } from './utils/logSuccessMessage.js';
@@ -142,6 +143,14 @@ class App {
 
       case 'hash':
         await printHashToConsole(this._currentPath, args);
+        break;
+
+      case 'compress':
+        await compressFile(this._currentPath, args);
+        break;
+
+      case 'decompress':
+        await decompressFile(this._currentPath, args);
         break;
 
       default:
