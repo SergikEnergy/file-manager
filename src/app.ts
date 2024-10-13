@@ -1,16 +1,16 @@
 import { consoleMessages } from './constants/console-messages.js';
 import * as osInfo from './commands/get-os-info.js';
 import { colorizedLog } from './utils/colorized-log.js';
+import { isArrayWithItems } from './utils/is-array-with-items.js';
+import { createInterface } from 'readline';
+import { parseInput } from './utils/parse-input.js';
+import { logCurrentPath } from './utils/log-current-path.js';
 
 class App {
   private currentPath: string;
 
   constructor(homeDir: string) {
     this.currentPath = homeDir;
-  }
-
-  hello() {
-    console.log(this.currentPath);
   }
 
   _isValidCommand = async (command: string, args: unknown[]) => {
@@ -20,7 +20,7 @@ class App {
         case 'up':
         case 'ls':
         case '.exit':
-          if (args.length > 0) {
+          if (isArrayWithItems(args)) {
             return false;
           } else {
             return true;
@@ -88,6 +88,46 @@ class App {
       }
     } catch {}
   };
+
+  _commands = async (command: string, args: string[]) => {
+    switch (command.trim().toLowerCase()) {
+      case 'os':
+        await this._logsProcessInfo(args);
+        break;
+
+      default:
+        colorizedLog(consoleMessages.WRONG_INPUT, 'cyan');
+        break;
+    }
+  };
+
+  async run() {
+    const readlineInterface = createInterface({ input: process.stdin, output: process.stdout });
+
+    readlineInterface.on('line', async (data) => {
+      if (data.includes('.exit')) {
+        readlineInterface.close();
+      }
+      try {
+        const [command, ...restParams] = parseInput(data.trim());
+        const isCommandCorrect = await this._isValidCommand(command, restParams);
+        if (isCommandCorrect) {
+          await this._commands(command, restParams);
+          logCurrentPath(this.currentPath);
+        } else {
+          colorizedLog(consoleMessages.WRONG_INPUT, 'cyan');
+          logCurrentPath(this.currentPath);
+        }
+      } catch {
+        colorizedLog(consoleMessages.ERROR, 'red');
+        logCurrentPath(this.currentPath);
+      }
+    });
+
+    readlineInterface.on('close', () => {
+      process.exit(0);
+    });
+  }
 }
 
 export { App };

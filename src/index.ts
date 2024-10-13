@@ -10,7 +10,7 @@ const pathToHomeDir = homedir();
 logSuccess(pathToHomeDir);
 
 const app = new App(pathToHomeDir);
-console.log(app);
+app.run();
 
 process.on('exit', (code) => {
   if (code === 0) {
