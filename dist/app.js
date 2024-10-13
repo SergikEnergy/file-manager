@@ -5,6 +5,8 @@ import { isArrayWithItems } from './utils/is-array-with-items.js';
 import { createInterface } from 'readline';
 import { parseInput } from './utils/parse-input.js';
 import { logCurrentPath } from './utils/log-current-path.js';
+import { changeCurrentDirectory, moveUpLevel } from './commands/path-commands.js';
+import { printFileToConsole, printFolderStructure } from './commands/file-system.js';
 class App {
     currentPath;
     constructor(homeDir) {
@@ -83,8 +85,20 @@ class App {
     };
     _commands = async (command, args) => {
         switch (command.trim().toLowerCase()) {
+            case 'up':
+                this.currentPath = await moveUpLevel(this.currentPath);
+                break;
+            case 'ls':
+                await printFolderStructure(this.currentPath);
+                break;
+            case 'cd':
+                this.currentPath = await changeCurrentDirectory(this.currentPath, args);
+                break;
             case 'os':
                 await this._logsProcessInfo(args);
+                break;
+            case 'cat':
+                await printFileToConsole(this.currentPath, args);
                 break;
             default:
                 colorizedLog(consoleMessages.WRONG_INPUT, 'cyan');

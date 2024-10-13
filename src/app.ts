@@ -5,6 +5,16 @@ import { isArrayWithItems } from './utils/is-array-with-items.js';
 import { createInterface } from 'readline';
 import { parseInput } from './utils/parse-input.js';
 import { logCurrentPath } from './utils/log-current-path.js';
+import { changeCurrentDirectory, moveUpLevel } from './commands/path-commands.js';
+import {
+  copyFile,
+  createEmptyFile,
+  deleteFile,
+  moveFile,
+  printFileToConsole,
+  printFolderStructure,
+  renameFile,
+} from './commands/file-system.js';
 
 class App {
   private currentPath: string;
@@ -91,8 +101,44 @@ class App {
 
   _commands = async (command: string, args: string[]) => {
     switch (command.trim().toLowerCase()) {
+      case 'up':
+        this.currentPath = await moveUpLevel(this.currentPath);
+        break;
+
+      case 'ls':
+        await printFolderStructure(this.currentPath);
+        break;
+
+      case 'cd':
+        this.currentPath = await changeCurrentDirectory(this.currentPath, args);
+        break;
+
       case 'os':
         await this._logsProcessInfo(args);
+        break;
+
+      case 'cat':
+        await printFileToConsole(this.currentPath, args);
+        break;
+
+      case 'add':
+        await createEmptyFile(this.currentPath, args);
+        break;
+
+      case 'rn':
+        await renameFile(this.currentPath, args);
+        break;
+
+      case 'cp':
+        await copyFile(this.currentPath, args);
+        break;
+
+      case 'rm':
+        await deleteFile(this.currentPath, args);
+        break;
+
+      case 'mv':
+        await moveFile(this.currentPath, args);
         break;
 
       default:
