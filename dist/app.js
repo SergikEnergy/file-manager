@@ -6,7 +6,9 @@ import { createInterface } from 'readline';
 import { parseInput } from './utils/parse-input.js';
 import { logCurrentPath } from './utils/log-current-path.js';
 import { changeCurrentDirectory, moveUpLevel } from './commands/path-commands.js';
-import { printFileToConsole, printFolderStructure } from './commands/file-system.js';
+import { copyFile, createEmptyFile, deleteFile, moveFile, printFileToConsole, printFolderStructure, renameFile, } from './commands/file-system.js';
+import { printHashToConsole } from './commands/crypto.js';
+import { compressFile, decompressFile } from './commands/brothli.js';
 class App {
     currentPath;
     constructor(homeDir) {
@@ -100,6 +102,30 @@ class App {
             case 'cat':
                 await printFileToConsole(this.currentPath, args);
                 break;
+            case 'add':
+                await createEmptyFile(this.currentPath, args);
+                break;
+            case 'rn':
+                await renameFile(this.currentPath, args);
+                break;
+            case 'cp':
+                await copyFile(this.currentPath, args);
+                break;
+            case 'rm':
+                await deleteFile(this.currentPath, args);
+                break;
+            case 'mv':
+                await moveFile(this.currentPath, args);
+                break;
+            case 'hash':
+                await printHashToConsole(this.currentPath, args);
+                break;
+            case 'compress':
+                await compressFile(this.currentPath, args);
+                break;
+            case 'decompress':
+                await decompressFile(this.currentPath, args);
+                break;
             default:
                 colorizedLog(consoleMessages.WRONG_INPUT, 'cyan');
                 break;
@@ -116,6 +142,7 @@ class App {
                 const isCommandCorrect = await this._isValidCommand(command, restParams);
                 if (isCommandCorrect) {
                     await this._commands(command, restParams);
+                    //end in case success log
                     logCurrentPath(this.currentPath);
                 }
                 else {

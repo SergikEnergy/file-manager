@@ -36,7 +36,6 @@ export const printFolderStructure = async (path: string) => {
 
 export const printFileToConsole = async (currentPath: string, pathToFile: string[]) => {
   try {
-    console.log(pathToFile);
     const pathToRead = pathResolver(currentPath, pathToFile);
     const rs = createReadStream(pathToRead, 'utf-8');
 

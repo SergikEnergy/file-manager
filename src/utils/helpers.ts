@@ -10,11 +10,15 @@ export const isDirExist = async (pathToDir: string) => {
 };
 
 export const pathResolver = (currentPath: string, pathTo: string | string[]) => {
-  const absolute = isAbsolute(pathTo.toString());
-  if (absolute) {
-    return normalize(pathTo.toString());
+  try {
+    const absolute = isAbsolute(typeof pathTo === 'string' ? pathTo : pathTo.toString());
+    if (absolute) {
+      return normalize(typeof pathTo === 'string' ? pathTo : pathTo.toString());
+    }
+    return resolve(currentPath, ...pathTo);
+  } catch {
+    throw new Error('Operation failed');
   }
-  return resolve(currentPath, ...pathTo);
 };
 
 export const isFileExist = async (pathToFile: string) => {

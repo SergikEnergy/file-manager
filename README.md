@@ -2,6 +2,10 @@
 
 File manager based on console commands using nodejs
 
+At first use
+**npm install**
+be sure that node version has same at the file **.nvmrc** showed
+
 ---
 
 ## User guide
@@ -12,10 +16,9 @@ File manager based on console commands using nodejs
 
 ---
 
-- use 20 LTS version of Node.js;
-- all commands are typed into console, separated with _space_;
+- all commands are typed into console, separated with _space sign_;
 - to start application you should use npm script in following way:
-  - **npm run start** - to start app without name (by default it'll will username equal **IvanIvanov**);
+  - **npm run start** - to start app without name (by default it'll be set username **IvanIvanov**);
   - **npm run start -- --username=your_username** - to show custom username;
 
 ### finish app

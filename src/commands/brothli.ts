@@ -11,15 +11,20 @@ export const compressFile = async (currentPath: string, [pathToFile, pathToDesti
   const pathToCompressedFile = pathResolver(currentPath, [pathToDestinationFile]);
   const pathToDestinationDir = parse(pathToCompressedFile).dir;
 
-  const rs = createReadStream(pathForRead);
   try {
-    await isDirExist(pathToDestinationDir);
-  } catch {
-    await mkdir(pathToDestinationDir);
-  }
+    try {
+      await isDirExist(pathToDestinationDir);
+    } catch {
+      await mkdir(pathToDestinationDir);
+    }
 
-  const ws = createWriteStream(pathToCompressedFile);
-  await pipeline(rs, createBrotliCompress(), ws);
+    const rs = createReadStream(pathForRead);
+
+    const ws = createWriteStream(pathToCompressedFile);
+    await pipeline(rs, createBrotliCompress(), ws);
+  } catch {
+    throw new Error('Operation failed');
+  }
 };
 
 export const decompressFile = async (currentPath: string, [pathToFile, pathToDestinationFile]: string[]) => {
