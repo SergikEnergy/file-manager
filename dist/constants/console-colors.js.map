@@ -1,0 +1,1 @@
+{"version":3,"file":"console-colors.js","sourceRoot":"","sources":["../../src/constants/console-colors.ts"],"names":[],"mappings":"AAAA,MAAM,CAAC,MAAM,aAAa,GAA8B;IACtD,UAAU,EAAE,SAAS;IACrB,GAAG,EAAE,UAAU;IACf,KAAK,EAAE,UAAU;IACjB,MAAM,EAAE,UAAU;IAClB,IAAI,EAAE,UAAU;CACjB,CAAC"}
