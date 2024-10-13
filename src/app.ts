@@ -15,6 +15,8 @@ import {
   printFolderStructure,
   renameFile,
 } from './commands/file-system.js';
+import { printHashToConsole } from './commands/crypto.js';
+import { compressFile, decompressFile } from './commands/brothli.js';
 
 class App {
   private currentPath: string;
@@ -141,6 +143,18 @@ class App {
         await moveFile(this.currentPath, args);
         break;
 
+      case 'hash':
+        await printHashToConsole(this.currentPath, args);
+        break;
+
+      case 'compress':
+        await compressFile(this.currentPath, args);
+        break;
+
+      case 'decompress':
+        await decompressFile(this.currentPath, args);
+        break;
+
       default:
         colorizedLog(consoleMessages.WRONG_INPUT, 'cyan');
         break;
@@ -159,6 +173,7 @@ class App {
         const isCommandCorrect = await this._isValidCommand(command, restParams);
         if (isCommandCorrect) {
           await this._commands(command, restParams);
+          //end in case success log
           logCurrentPath(this.currentPath);
         } else {
           colorizedLog(consoleMessages.WRONG_INPUT, 'cyan');
